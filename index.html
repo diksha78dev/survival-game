@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TERMINUS — Survival Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Raleway:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕ CLOSE</button>
+  <a href="#hero" onclick="closeMobileMenu()">Home</a>
+  <a href="#games" onclick="closeMobileMenu()">Games</a>
+  <a href="#leaderboard" onclick="closeMobileMenu()">Rankings</a>
+  <a href="#register" onclick="closeMobileMenu()">Register</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">TERMIN<span>U</span>S</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#leaderboard">Rankings</a></li>
+    <li><a href="#register">Register</a></li>
+  </ul>
+  <a href="#register" class="nav-cta">ENTER NOW</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-bg-circle"></div>
+  <div class="hero-number" aria-hidden="true">001</div>
+
+  <div class="hero-tag">Season 04 — Now Live</div>
+  
+  <!-- Countdown Timer -->
+  <div class="countdown-container">
+    <div class="countdown-label">Event Starts In</div>
+    <div class="countdown-display">
+      <div class="countdown-unit">
+        <div class="countdown-value" id="countdown-days">0</div>
+        <div class="countdown-text">DAYS</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="countdown-hours">0</div>
+        <div class="countdown-text">HOURS</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="countdown-minutes">0</div>
+        <div class="countdown-text">MINUTES</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="countdown-seconds">0</div>
+        <div class="countdown-text">SECONDS</div>
+      </div>
+    </div>
+  </div>
+  
+  <h1>
+    SURVIVE<br>
+    THE <span class="accent">ARENA</span>
+  </h1>
+  <p class="hero-sub">
+    456 players enter. Only one leaves. Face trials designed to test your limits — mind, nerve, and will. Do you have what it takes?
+  </p>
+  <div class="hero-actions">
+    <a href="#register" class="btn-primary">REGISTER NOW</a>
+    <a href="#games" class="btn-secondary">VIEW TRIALS</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num" data-count="456">0</span>
+      <span class="stat-label">Players</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-count="6">0</span>
+      <span class="stat-label">Trials</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-count="1">0</span>
+      <span class="stat-label">Survivor</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Danger</span>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games">
+  <div class="section-label reveal">Trials & Challenges</div>
+  <h2 class="section-title reveal">THE SIX <span style="color:var(--red)">TRIALS</span></h2>
+  <div class="games-grid">
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:33%"></div></div>
+      </div>
+      <div class="game-number">01</div>
+      <span class="game-icon">🔴</span>
+      <div class="game-name">Red Light, Dead Stop</div>
+      <p class="game-desc">Move only when you can. Freeze on command. One wrong step and the doll's eyes will find you. 456 enter — but how many leave?</p>
+      <div class="game-meta">
+        <span class="game-tag danger">Extreme</span>
+        <span class="game-tag">Reaction</span>
+        <span class="game-tag">Solo</span>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:55%"></div></div>
+      </div>
+      <div class="game-number">02</div>
+      <span class="game-icon">🍬</span>
+      <div class="game-name">Shape Carver</div>
+      <p class="game-desc">Extract your shape from the candy without a single crack. Steady hands. Steadier nerves. Every crack brings you closer to the end.</p>
+      <div class="game-meta">
+        <span class="game-tag danger">High</span>
+        <span class="game-tag">Precision</span>
+        <span class="game-tag">Solo</span>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:50%"></div></div>
+      </div>
+      <div class="game-number">03</div>
+      <span class="game-icon">⚔️</span>
+      <div class="game-name">Tug of War</div>
+      <p class="game-desc">Ten against ten. The rope is your lifeline. Work as one or fall as ten. Trust your team — or die wondering why you didn't.</p>
+      <div class="game-meta">
+        <span class="game-tag danger">Extreme</span>
+        <span class="game-tag">Team</span>
+        <span class="game-tag">Strength</span>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:40%"></div></div>
+      </div>
+      <div class="game-number">04</div>
+      <span class="game-icon">🌉</span>
+      <div class="game-name">Glass Bridge</div>
+      <p class="game-desc">Sixteen pairs of glass. One supports you. One drops you. Eighteen steps across a void, and no second chances below.</p>
+      <div class="game-meta">
+        <span class="game-tag danger">Lethal</span>
+        <span class="game-tag">Luck</span>
+        <span class="game-tag">Endurance</span>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:25%"></div></div>
+      </div>
+      <div class="game-number">05</div>
+      <span class="game-icon">🗺️</span>
+      <div class="game-name">Maze of No Return</div>
+      <p class="game-desc">Navigate a shifting labyrinth with no map and no mercy. The walls move. The clocks don't stop. Find the exit or become part of the maze forever.</p>
+      <div class="game-meta">
+        <span class="game-tag danger">Lethal</span>
+        <span class="game-tag">Navigation</span>
+        <span class="game-tag">Mental</span>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-survival">SURVIVAL RATE
+        <div class="survival-bar"><div class="survival-fill" style="width:0%"></div></div>
+      </div>
+      <div class="game-number">06</div>
+      <span class="game-icon">👁️</span>
+      <div class="game-name">The Final Reckoning</div>
+      <p class="game-desc">One remains. The final trial is known only to those who face it. No spoilers. No second chances. Only the last survivor earns the truth.</p>
+      <div class="game-meta">
+        <span class="game-tag danger">???</span>
+        <span class="game-tag">Unknown</span>
+        <span class="game-tag">Final</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard">
+  <div class="leaderboard-header">
+    <div>
+      <div class="section-label reveal">Live Rankings</div>
+      <h2 class="section-title reveal" style="margin-bottom:0">PLAYER <span style="color:var(--red)">RANKINGS</span></h2>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      UPDATING LIVE
+    </div>
+  </div>
+
+  <div class="lb-controls">
+    <button class="lb-filter active" onclick="filterLeaderboard('all', this)">ALL PLAYERS</button>
+    <button class="lb-filter" onclick="filterLeaderboard('alive', this)">ALIVE</button>
+    <button class="lb-filter" onclick="filterLeaderboard('eliminated', this)">ELIMINATED</button>
+    <button class="lb-filter" onclick="sortLeaderboard('score', this)">SORT BY SCORE</button>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="lb-table" id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>RANK</th>
+          <th>PLAYER</th>
+          <th>SCORE</th>
+          <th>TRIALS WON</th>
+          <th>STATUS</th>
+          <th>CHANGE</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody">
+        <!-- JS generated -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <div class="register-layout">
+    <div class="register-info reveal">
+      <div class="section-label">Player Enrollment</div>
+      <h2 class="section-title">JOIN THE<br><span style="color:var(--red)">ARENA</span></h2>
+      <p>You've been selected. Whether by debt, desperation, or pure ambition — the arena does not discriminate. Register your identity and prepare to face what comes next.</p>
+      <ul class="register-rules">
+        <li>All registrations are final and binding</li>
+        <li>Players must be 18 years or older</li>
+        <li>No alliances guaranteed by registration</li>
+        <li>The arena reserves the right to modify trials</li>
+        <li>Only one player wins the final prize</li>
+        <li>Your number is your identity here</li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <form id="registrationForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="JOHN" autocomplete="off">
+            <span class="form-error" id="firstNameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="DOE" autocomplete="off">
+            <span class="form-error" id="lastNameError"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="player@terminus.io" autocomplete="off">
+          <span class="form-error" id="emailError"></span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" placeholder="25" min="18" max="99">
+            <span class="form-error" id="ageError"></span>
+          </div>
+          <div class="form-group">
+            <label for="trial">Preferred Trial</label>
+            <select id="trial">
+              <option value="">Select a trial...</option>
+              <option value="01">01 — Red Light, Dead Stop</option>
+              <option value="02">02 — Shape Carver</option>
+              <option value="03">03 — Tug of War</option>
+              <option value="04">04 — Glass Bridge</option>
+              <option value="05">05 — Maze of No Return</option>
+            </select>
+            <span class="form-error" id="trialError"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="motivation">Why should you survive? (10-200 chars)</label>
+          <textarea id="motivation" placeholder="Tell us why you deserve to win..."></textarea>
+          <span class="form-error" id="motivationError"></span>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="agree" style="width:auto;margin-right:10px;accent-color:var(--red)">
+            I accept all consequences. I understand there are no second chances.
+          </label>
+          <span class="form-error" id="agreeError"></span>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;display:block;text-align:center;border:none;font-size:1rem;">
+          SUBMIT REGISTRATION
+        </button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <h3>REGISTRATION CONFIRMED</h3>
+        <p id="successMsg">Player 001 — Welcome to the Arena. Prepare yourself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">TERMIN<span>U</span>S</div>
+    <div class="footer-links">
+      <a href="#hero">Home</a>
+      <a href="#games">Trials</a>
+      <a href="#leaderboard">Rankings</a>
+      <a href="#register">Register</a>
+    </div>
+  </div>
+  <p class="footer-copy">© 2025 TERMINUS ARENA — AN ORIGINAL FICTIONAL SURVIVAL COMPETITION — ALL RIGHTS RESERVED</p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
