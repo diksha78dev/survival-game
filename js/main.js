@@ -238,6 +238,61 @@ function initCountdown() {
   setInterval(updateCountdown, 1000);
 }
 
+// --- Trial Countdown Timer ---
+function initTrialCountdown() {
+  const countdownSection = document.getElementById('countdown-section');
+  if (!countdownSection) return;
+  
+  // Set target date 7 days from today
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + 7);
+  targetDate.setHours(0, 0, 0, 0);
+  
+  const hoursElement = document.getElementById('trial-hours');
+  const minutesElement = document.getElementById('trial-minutes');
+  const secondsElement = document.getElementById('trial-seconds');
+  const expiredMessage = document.getElementById('trial-expired');
+  const timeBoxes = document.querySelectorAll('.time-box');
+  const separators = document.querySelectorAll('.time-separator');
+  
+  function updateTrialCountdown() {
+    try {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+      
+      if (distance < 0) {
+        // Timer has expired
+        hoursElement.textContent = '00';
+        minutesElement.textContent = '00';
+        secondsElement.textContent = '00';
+        
+        // Show expired state
+        timeBoxes.forEach(box => box.classList.add('expired'));
+        separators.forEach(sep => sep.classList.add('expired'));
+        expiredMessage.classList.add('show');
+        
+        return; // Stop updating
+      }
+      
+      // Calculate HH:MM:SS
+      const totalSeconds = Math.floor(distance / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      
+      // Update display with zero padding
+      hoursElement.textContent = String(hours).padStart(2, '0');
+      minutesElement.textContent = String(minutes).padStart(2, '0');
+      secondsElement.textContent = String(seconds).padStart(2, '0');
+    } catch (error) {
+      console.error('Error updating trial countdown:', error);
+    }
+  }
+  
+  updateTrialCountdown();
+  setInterval(updateTrialCountdown, 1000);
+}
+
 // --- Parallax Grid Effect ---
 function initParallaxGrid() {
   const heroGrid = document.querySelector('.hero-grid');
@@ -648,6 +703,188 @@ function initButtonSparks() {
   });
 }
 
+// --- Theme Toggle ---
+function initThemeToggle() {
+  const themeToggle = document.getElementById('themeToggle');
+  if (!themeToggle) return;
+  
+  // Load saved theme or default to dark
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  applyTheme(savedTheme);
+  
+  // Toggle theme on button click
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
+}
+
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.getElementById('themeToggle').textContent = '☀️';
+  } else {
+    document.body.removeAttribute('data-theme');
+    document.getElementById('themeToggle').textContent = '🌙';
+  }
+}
+
+// --- Quiz Game ---
+const quizData = [
+  {
+    question: "In the Glass Bridge trial, how many panels are there per step?",
+    options: ["1", "2", "3", "4"],
+    correctIndex: 1,
+    labels: ["A)", "B)", "C)", "D)"]
+  },
+  {
+    question: "What is the maximum number of players in TERMINUS Arena?",
+    options: ["100", "256", "456", "999"],
+    correctIndex: 2,
+    labels: ["A)", "B)", "C)", "D)"]
+  },
+  {
+    question: "Which trial has the lowest survival rate in TERMINUS?",
+    options: ["Shape Carver", "Glass Bridge", "Maze of No Return", "The Final Reckoning"],
+    correctIndex: 3,
+    labels: ["A)", "B)", "C)", "D)"]
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function initQuiz() {
+  const quizCard = document.getElementById('quizCard');
+  const resultScreen = document.getElementById('resultScreen');
+  const retryBtn = document.getElementById('retryBtn');
+  
+  if (!quizCard || !resultScreen) return;
+  
+  loadQuestion();
+  
+  if (retryBtn) {
+    retryBtn.addEventListener('click', resetQuiz);
+  }
+}
+
+function loadQuestion() {
+  const question = quizData[currentQuestion];
+  const questionText = document.getElementById('questionText');
+  const optionsGrid = document.getElementById('optionsGrid');
+  const questionCounter = document.getElementById('questionCounter');
+  const progressBar = document.getElementById('progressBar');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  // Update progress
+  questionCounter.textContent = `QUESTION ${currentQuestion + 1} OF ${quizData.length}`;
+  const progressPercent = ((currentQuestion + 1) / quizData.length) * 100;
+  progressBar.style.width = progressPercent + '%';
+  
+  // Update question
+  questionText.textContent = question.question;
+  
+  // Clear options
+  optionsGrid.innerHTML = '';
+  
+  // Create option buttons
+  question.options.forEach((option, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = question.labels[index] + ' ' + option;
+    btn.dataset.index = index;
+    btn.addEventListener('click', () => selectAnswer(index));
+    optionsGrid.appendChild(btn);
+  });
+  
+  // Reset next button
+  nextBtn.disabled = true;
+}
+
+function selectAnswer(index) {
+  const question = quizData[currentQuestion];
+  const optionBtns = document.querySelectorAll('.option-btn');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  // Disable all options
+  optionBtns.forEach(btn => btn.disabled = true);
+  
+  // Show correct and incorrect answers
+  optionBtns.forEach((btn, btnIndex) => {
+    if (btnIndex === question.correctIndex) {
+      btn.classList.add('correct');
+    } else if (btnIndex === index) {
+      btn.classList.add('incorrect');
+    }
+  });
+  
+  // Update score if correct
+  if (index === question.correctIndex) {
+    score++;
+  }
+  
+  // Enable next button
+  nextBtn.disabled = false;
+  
+  // Add click handler to next button
+  nextBtn.onclick = () => nextQuestion();
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  
+  if (currentQuestion < quizData.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  const quizCard = document.getElementById('quizCard');
+  const resultScreen = document.getElementById('resultScreen');
+  const resultScore = document.getElementById('resultScore');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultMessage = document.getElementById('resultMessage');
+  
+  // Hide quiz card, show result
+  quizCard.style.display = 'none';
+  resultScreen.classList.add('show');
+  
+  // Build result based on score
+  resultScore.textContent = `${score}/${quizData.length}`;
+  
+  let title, message;
+  if (score <= 1) {
+    title = 'ELIMINATED';
+    message = 'You were not ready for the arena. The trials have claimed you.';
+  } else if (score === 2) {
+    title = 'SURVIVOR';
+    message = 'You have survived the arena. Prepare for harder challenges ahead.';
+  } else {
+    title = 'CHAMPION';
+    message = 'Exceptional performance! You dominate the arena.';
+  }
+  
+  resultTitle.textContent = title;
+  resultMessage.textContent = message;
+}
+
+function resetQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  
+  const quizCard = document.getElementById('quizCard');
+  const resultScreen = document.getElementById('resultScreen');
+  
+  quizCard.style.display = 'flex';
+  resultScreen.classList.remove('show');
+  
+  loadQuestion();
+}
+
 // --- Initialize All ---
 document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
@@ -657,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypewriter();
   initPageTransitions();
   initCountdown();
+  initTrialCountdown();
   initParallaxGrid();
   initCustomCursor();
   initMobileMenu();
@@ -666,4 +904,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initFormValidation();
   initLeaderboardSearch();
   initButtonSparks();
+  initThemeToggle();
+  initQuiz();
 });
