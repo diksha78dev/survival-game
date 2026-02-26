@@ -3,12 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TERMINUS Survival Arena: A thrilling online competition platform featuring 6 deadly trials, real-time leaderboards, and interactive gameplay. Test your limits and compete for the ultimate prize.">
+  <meta name="keywords" content="survival game, arena competition, online competition, trials, leaderboard, competitive gaming">
+  <meta name="author" content="TERMINUS Arena">
+  <meta property="og:title" content="TERMINUS — Survival Arena">
+  <meta property="og:description" content="456 players enter. Only one leaves. Face trials designed to test your limits — mind, nerve, and will.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#ff0033">
   <title>TERMINUS — Survival Arena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Raleway:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+  <div class="preloader-logo">TERMIN<span>U</span>S<span class="preloader-dot"></span></div>
+</div>
+
+<!-- Scroll Progress Bar -->
+<div class="scroll-progress-bar" id="progressBar"></div>
+
+<!-- Particles Container (for spark effects) -->
+<div id="particlesContainer" style="position: fixed; inset: 0; pointer-events: none; z-index: 99;"></div>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" id="backToTop" title="Back to Top" aria-label="Scroll to top of page">↑</button>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-content">
+    <a href="#hero" class="bottom-nav-item active" data-section="hero">🏠 HOME</a>
+    <a href="#games" class="bottom-nav-item" data-section="games">⚔️ GAMES</a>
+    <a href="#leaderboard" class="bottom-nav-item" data-section="leaderboard">📊 RANK</a>
+    <a href="#register" class="bottom-nav-item" data-section="register">✎ JOIN</a>
+  </div>
+</nav>
 
 <!-- Custom Cursor -->
 <div class="cursor" id="cursor"></div>
@@ -26,13 +57,13 @@
 <!-- NAV -->
 <nav>
   <div class="logo">TERMIN<span>U</span>S</div>
-  <ul class="nav-links">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#games">Games</a></li>
-    <li><a href="#leaderboard">Rankings</a></li>
-    <li><a href="#register">Register</a></li>
+  <ul class="nav-links" role="navigation">
+    <li><a href="#hero" aria-label="Navigate to home section">Home</a></li>
+    <li><a href="#games" aria-label="Navigate to trials section">Games</a></li>
+    <li><a href="#leaderboard" aria-label="Navigate to rankings section">Rankings</a></li>
+    <li><a href="#register" aria-label="Navigate to registration section">Register</a></li>
   </ul>
-  <a href="#register" class="nav-cta">ENTER NOW</a>
+  <a href="#register" class="nav-cta" aria-label="Register for the arena">ENTER NOW</a>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -45,6 +76,11 @@
   <div class="hero-number" aria-hidden="true">001</div>
 
   <div class="hero-tag">Season 04 — Now Live</div>
+  
+  <h1>
+    SURVIVE<br>
+    THE <span class="accent">ARENA</span>
+  </h1>
   
   <!-- Countdown Timer -->
   <div class="countdown-container">
@@ -71,17 +107,12 @@
       </div>
     </div>
   </div>
-  
-  <h1>
-    SURVIVE<br>
-    THE <span class="accent">ARENA</span>
-  </h1>
   <p class="hero-sub">
     456 players enter. Only one leaves. Face trials designed to test your limits — mind, nerve, and will. Do you have what it takes?
   </p>
   <div class="hero-actions">
-    <a href="#register" class="btn-primary">REGISTER NOW</a>
-    <a href="#games" class="btn-secondary">VIEW TRIALS</a>
+    <a href="#register" class="btn-primary" aria-label="Register for the arena now">REGISTER NOW</a>
+    <a href="#games" class="btn-secondary" aria-label="View all trials and challenges">VIEW TRIALS</a>
   </div>
   <div class="hero-stats">
     <div class="stat-item">
@@ -216,13 +247,14 @@
   </div>
 
   <div class="lb-controls">
-    <button class="lb-filter active" onclick="filterLeaderboard('all', this)">ALL PLAYERS</button>
-    <button class="lb-filter" onclick="filterLeaderboard('alive', this)">ALIVE</button>
-    <button class="lb-filter" onclick="filterLeaderboard('eliminated', this)">ELIMINATED</button>
-    <button class="lb-filter" onclick="sortLeaderboard('score', this)">SORT BY SCORE</button>
+    <button class="lb-filter active" onclick="filterLeaderboard('all', this)" aria-label="Filter leaderboard to show all players">ALL PLAYERS</button>
+    <button class="lb-filter" onclick="filterLeaderboard('alive', this)" aria-label="Filter leaderboard to show alive players only">ALIVE</button>
+    <button class="lb-filter" onclick="filterLeaderboard('eliminated', this)" aria-label="Filter leaderboard to show eliminated players only">ELIMINATED</button>
+    <button class="lb-filter" onclick="sortLeaderboard('score', this)" aria-label="Sort leaderboard by player score">SORT BY SCORE</button>
+    <input type="text" id="lbSearch" placeholder="Search by name or #..." aria-label="Search players by name or player number" style="background: var(--dark3); border: 1px solid rgba(255,255,255,0.08); color: var(--text); padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; border-radius: 2px; width: 180px; cursor: text;">
   </div>
 
-  <div style="overflow-x:auto;">
+  <div class="lb-container">
     <table class="lb-table" id="leaderboardTable">
       <thead>
         <tr>
@@ -259,32 +291,58 @@
     </div>
     <div class="reveal">
       <form id="registrationForm" novalidate>
+        <!-- Form Progress Bar -->
+        <div style="margin-bottom: 24px;">
+          <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+            <div id="formProgress" style="height: 100%; background: linear-gradient(to right, var(--red), var(--gold)); width: 0%; transition: width 0.3s ease; border-radius: 2px;"></div>
+          </div>
+          <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--muted); display: block; margin-top: 8px;" id="progressText">0%</span>
+        </div>
+        
         <div class="form-row">
           <div class="form-group">
             <label for="firstName">First Name</label>
-            <input type="text" id="firstName" placeholder="JOHN" autocomplete="off">
-            <span class="form-error" id="firstNameError"></span>
+            <input type="text" id="firstName" placeholder="JOHN" autocomplete="given-name" aria-label="Enter your first name">
+            <span class="form-error" id="firstNameError" role="alert"></span>
           </div>
           <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" placeholder="DOE" autocomplete="off">
-            <span class="form-error" id="lastNameError"></span>
+            <input type="text" id="lastName" placeholder="DOE" autocomplete="family-name" aria-label="Enter your last name">
+            <span class="form-error" id="lastNameError" role="alert"></span>
           </div>
         </div>
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" id="email" placeholder="player@terminus.io" autocomplete="off">
-          <span class="form-error" id="emailError"></span>
+          <input type="email" id="email" placeholder="player@terminus.io" autocomplete="email" aria-label="Enter your email address">
+          <span class="form-error" id="emailError" role="alert"></span>
+        </div>
+        <div class="form-group">
+          <label for="password">Arena Password</label>
+          <div style="position: relative;">
+            <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" aria-label="Enter a secure password">
+            <button type="button" id="passwordToggle" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; padding: 0; opacity: 0.7; transition: opacity 0.2s;" title="Toggle password visibility" aria-label="Toggle password visibility">👁️</button>
+          </div>
+          <span class="form-error" id="passwordError" role="alert"></span>
+          <!-- Password Strength Indicator -->
+          <div style="margin-top: 8px;">
+            <div style="display: flex; gap: 4px;">
+              <div class="pwd-strength-bar" style="height: 3px; flex: 1; background: rgba(255,255,255,0.1); border-radius: 2px;" aria-hidden="true"></div>
+              <div class="pwd-strength-bar" style="height: 3px; flex: 1; background: rgba(255,255,255,0.1); border-radius: 2px;" aria-hidden="true"></div>
+              <div class="pwd-strength-bar" style="height: 3px; flex: 1; background: rgba(255,255,255,0.1); border-radius: 2px;" aria-hidden="true"></div>
+              <div class="pwd-strength-bar" style="height: 3px; flex: 1; background: rgba(255,255,255,0.1); border-radius: 2px;" aria-hidden="true"></div>
+            </div>
+            <span id="strengthText" aria-live="polite" aria-label="Password strength indicator" style="font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 2px; color: var(--muted); display: block; margin-top: 4px;">NO PASSWORD</span>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="age">Age</label>
-            <input type="number" id="age" placeholder="25" min="18" max="99">
-            <span class="form-error" id="ageError"></span>
+            <input type="number" id="age" placeholder="25" min="18" max="99" aria-label="Enter your age">
+            <span class="form-error" id="ageError" role="alert"></span>
           </div>
           <div class="form-group">
             <label for="trial">Preferred Trial</label>
-            <select id="trial">
+            <select id="trial" aria-label="Select your preferred trial">
               <option value="">Select a trial...</option>
               <option value="01">01 — Red Light, Dead Stop</option>
               <option value="02">02 — Shape Carver</option>
@@ -292,22 +350,22 @@
               <option value="04">04 — Glass Bridge</option>
               <option value="05">05 — Maze of No Return</option>
             </select>
-            <span class="form-error" id="trialError"></span>
+            <span class="form-error" id="trialError" role="alert"></span>
           </div>
         </div>
         <div class="form-group">
           <label for="motivation">Why should you survive? (10-200 chars)</label>
-          <textarea id="motivation" placeholder="Tell us why you deserve to win..."></textarea>
-          <span class="form-error" id="motivationError"></span>
+          <textarea id="motivation" placeholder="Tell us why you deserve to win..." aria-label="Explain your motivation to win the arena"></textarea>
+          <span class="form-error" id="motivationError" role="alert"></span>
         </div>
         <div class="form-group">
           <label>
-            <input type="checkbox" id="agree" style="width:auto;margin-right:10px;accent-color:var(--red)">
+            <input type="checkbox" id="agree" style="width:auto;margin-right:10px;accent-color:var(--red)" aria-label="Accept all arena rules and consequences">
             I accept all consequences. I understand there are no second chances.
           </label>
-          <span class="form-error" id="agreeError"></span>
+          <span class="form-error" id="agreeError" role="alert"></span>
         </div>
-        <button type="submit" class="btn-primary" style="width:100%;display:block;text-align:center;border:none;font-size:1rem;">
+        <button type="submit" class="btn-primary" style="width:100%;display:block;text-align:center;border:none;font-size:1rem;" aria-label="Submit your arena registration">
           SUBMIT REGISTRATION
         </button>
       </form>
