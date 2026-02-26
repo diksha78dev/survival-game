@@ -490,33 +490,74 @@ function animateScoreTicker(element, newScore, oldScore) {
   }, duration / steps);
 }
 
-// --- Render Leaderboard with Search ---
-function renderLeaderboard(data) {
+// --- Render Leaderboard with Enhanced Animations ---
+function renderLeaderboard(data, doAnimate = false) {
   const maxScore = Math.max(...data.map(p => p.score || 0));
   const tbody = document.getElementById('lbBody');
+  const oldRows = new Map(Array.from(tbody.querySelectorAll('tr')).map(tr => [tr.dataset.playerId, tr]));
+  
   tbody.innerHTML = data.map((p, i) => {
     const rank = i + 1;
     const rankClass = rank <= 3 ? `rank-${rank}` : '';
-    const changeIcon = p.change > 0 ? `<span class="up">▲ ${p.change}</span>` : p.change < 0 ? `<span class="down">▼ ${Math.abs(p.change)}</span>` : `<span class="same">—</span>`;
+    const changeIcon = p.change > 0 ? `<span class="up">▲ ${Math.abs(p.change)}</span>` : p.change < 0 ? `<span class="down">▼ ${Math.abs(p.change)}</span>` : `<span class="same">—</span>`;
     const pct = maxScore > 0 ? (p.score / maxScore * 100).toFixed(1) : 0;
     const isNewPlayer = lastRegisteredPlayerId === p.id ? ' style="background: rgba(255,0,51,0.1);"' : '';
     
     return `
-      <tr data-status="${p.status}"${isNewPlayer}>
+      <tr data-status="${p.status}" data-player-id="${p.id}"${isNewPlayer}>
         <td class="lb-rank ${rankClass}">${rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : rank}</td>
         <td class="lb-name">
           <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--muted);margin-right:8px;">#${p.id}</span>
           ${p.name}
+          <span class="lb-change" style="display:inline-block;margin-left:8px;">${changeIcon}</span>
         </td>
         <td class="lb-score">
-          <span class="score-ticker">${p.score.toLocaleString()}</span>
-          <div class="score-bar-wrap"><div class="score-bar" style="width:${pct}%"></div></div>
+          <span class="score-ticker" data-score="${p.score}">${p.score.toLocaleString()}</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="--score-width:${pct}%;width:0%"></div></div>
         </td>
         <td style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--muted);">${p.trials}/6</td>
         <td><span class="lb-status status-${p.status}">${p.status.toUpperCase()}</span></td>
-        <td>${changeIcon}</td>
       </tr>`;
   }).join('');
+  
+  // Animate score counters
+  if (doAnimate) {
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+      const scoreTicker = row.querySelector('.score-ticker');
+      const scoreBar = row.querySelector('.score-bar');
+      if (scoreTicker && scoreBar) {
+        const targetScore = parseInt(scoreTicker.dataset.score);
+        animateScoreTicker(scoreTicker, targetScore, 600);
+        scoreBar.style.animation = 'none';
+        setTimeout(() => {
+          scoreBar.style.animation = 'scoreBarFill 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+        }, 50);
+      }
+    });
+  }
+}
+
+// --- Score Ticker Animation ---
+function animateScoreTicker(element, targetScore, duration = 600) {
+  if (!element) return;
+  const startScore = parseInt(element.textContent.replace(/,/g, '')) || 0;
+  const startTime = performance.now();
+  
+  function updateTicker(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const currentScore = Math.floor(startScore + (targetScore - startScore) * progress);
+    element.textContent = currentScore.toLocaleString();
+    
+    if (progress < 1) {
+      requestAnimationFrame(updateTicker);
+    } else {
+      element.textContent = targetScore.toLocaleString();
+    }
+  }
+  
+  requestAnimationFrame(updateTicker);
 }
 
 function filterLeaderboard(filter, btn) {
@@ -565,18 +606,71 @@ function initLeaderboardSearch() {
   });
 }
 
-applyLeaderboard();
+// --- Initialize leaderboard with animations ---
+function initLeaderboardAnimations() {
+  let data = [...players];
+  if (currentFilter === 'alive') data = data.filter(p => p.status === 'alive');
+  if (currentFilter === 'eliminated') data = data.filter(p => p.status === 'eliminated');
+  if (currentSort === 'score') data.sort((a, b) => b.score - a.score);
+  renderLeaderboard(data, true);
+}
 
-// Live score simulation
-setInterval(() => {
+// Initialize leaderboard on page load with animations
+setTimeout(() => {
+  initLeaderboardAnimations();
+}, 100);
+
+// --- Shuffle Rankings Function ---
+function shuffleLeaderboard() {
   players.forEach(p => {
-    if (p.status === 'alive' && Math.random() > 0.7) {
-      const delta = Math.floor(Math.random() * 200 - 80);
-      p.score = Math.max(0, p.score + delta);
-      p.change = delta > 0 ? 1 : delta < 0 ? -1 : 0;
-    }
+    const oldScore = p.score;
+    p.score = Math.floor(Math.random() * 5000) + 500;
+    p.change = p.score > oldScore ? 1 : p.score < oldScore ? -1 : 0;
   });
-  applyLeaderboard();
+  
+  // Re-apply filters and render with animations
+  let data = [...players];
+  if (currentFilter === 'alive') data = data.filter(p => p.status === 'alive');
+  if (currentFilter === 'eliminated') data = data.filter(p => p.status === 'eliminated');
+  if (currentSort === 'score') data.sort((a, b) => b.score - a.score);
+  else data.sort((a, b) => parseFloat(b.id) - parseFloat(a.id));
+  
+  renderLeaderboard(data, true);
+}
+
+// Live score simulation with enhanced animations
+let liveUpdateInterval = setInterval(() => {
+  const alivePlayers = players.filter(p => p.status === 'alive');
+  const numToUpdate = Math.floor(Math.random() * 2) + 2; // 2-3 players
+  
+  for (let i = 0; i < numToUpdate && alivePlayers.length > 0; i++) {
+    const player = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+    const oldScore = player.score;
+    const delta = Math.floor(Math.random() * 300 - 100);
+    player.score = Math.max(0, player.score + delta);
+    player.change = player.score > oldScore ? 1 : player.score < oldScore ? -1 : 0;
+  }
+  
+  // Re-sort and re-render with animations
+  let data = [...players];
+  if (currentFilter === 'alive') data = data.filter(p => p.status === 'alive');
+  if (currentFilter === 'eliminated') data = data.filter(p => p.status === 'eliminated');
+  if (currentSort === 'score') data.sort((a, b) => b.score - a.score);
+  
+  const tbody = document.getElementById('lbBody');
+  const oldRows = new Map(Array.from(tbody.querySelectorAll('tr')).map(tr => [tr.dataset.playerId, tr]));
+  
+  renderLeaderboard(data, true);
+  
+  // Highlight updated rows
+  players.filter(p => p.change !== 0).forEach(updatedPlayer => {
+    const row = tbody.querySelector(`tr[data-player-id="${updatedPlayer.id}"]`);
+    if (row) {
+      row.classList.add('updating');
+      setTimeout(() => row.classList.remove('updating'), 1000);
+    }
+    updatedPlayer.change = 0; // Reset change
+  });
 }, 4000);
 
 // --- Real-time Form Validation & Progress ---
