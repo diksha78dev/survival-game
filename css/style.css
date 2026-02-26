@@ -339,7 +339,7 @@ nav {
       rgba(8, 8, 8, 0.75) 60%,
       rgba(8, 8, 8, 1) 100%
     ),
-    url('../images/banner.jpg');
+    url('../image/banner.jpg');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
